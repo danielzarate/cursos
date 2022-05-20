@@ -10,6 +10,11 @@ class CoursesCurriculu extends Component
 {
     public $course, $section;
 
+    protected $rules=[
+        'section.name'=>'required'
+    ];
+
+
     public function mount(Course $course){
         $this->course=$course;
         $this->section=new Section();
