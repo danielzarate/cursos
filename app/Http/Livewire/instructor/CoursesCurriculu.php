@@ -29,4 +29,11 @@ class CoursesCurriculu extends Component
     {
         $this->section=$section;
     }
+
+    public function update(){
+        $this->section->save();
+        $this->section=new Section();
+
+        $this->course=Course::find($this->course->id);
+    }
 }
