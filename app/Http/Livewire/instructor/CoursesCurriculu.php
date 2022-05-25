@@ -8,7 +8,7 @@ use App\Models\Section;
 
 class CoursesCurriculu extends Component
 {
-    public $course, $section;
+    public $course, $section, $name;
 
     protected $rules=[
         'section.name'=>'required'
@@ -31,9 +31,31 @@ class CoursesCurriculu extends Component
     }
 
     public function update(){
+
+        $this->validate();
         $this->section->save();
         $this->section=new Section();
 
         $this->course=Course::find($this->course->id);
     }
+
+    public function store(){
+
+        $this->validate([
+            'name'=>'required'
+        ]);
+        Section::create([
+            'name'=>$this->name,
+            'course_id'=>$this->course->id
+        ]);
+        $this->reset('name');
+        $this->course=Course::find($this->course->id);
+    }
+
+    public function destroy(Section $section){
+        $section->delete();
+        $this->course=Course::find($this->course->id);
+    }
+
+
 }
