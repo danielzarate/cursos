@@ -1,6 +1,6 @@
 <div>
     @foreach ( $section->lessons as $item )
-        <article class="card mt-4">
+        <article class="card mt-4" x-data="{open:false}">
             <div class="card-body ">
 
                 @if ($lesson->id==$item->id)
@@ -42,10 +42,10 @@
                     </form>
                 @else
                     <header>
-                        <h1><i class="far fa-play-circle text-blue-500 mr-1"></i> Leccion: {{$item->name}}</h1>
+                        <h1 class="cursor-pointer" x-on:click="open=!open"><i class="far fa-play-circle text-blue-500 mr-1"></i> Leccion: {{$item->name}}</h1>
                     </header>
 
-                    <div>
+                    <div x-show="open">
                         <hr class="my-2">
                         <p class="text-sm">Plataforma: {{$item->platform->name}}</p>
                         <p class="text-sm">Enlace: <a class="text-blue-600" href="{{$item->url}}">{{$item->url}}</a></p>
@@ -54,13 +54,15 @@
                             <button wire:click="edit({{$item}})" class="btn btn-primary text-sm">Editar</button>
                             <button wire:click="destroy({{$item}})" class="btn btn-danger text-sm">Eliminar</button>
                         </div>
+
+                        <div class="my-2 mb-4">
+                            @livewire('instructor.lesson-description', ['lesson' => $item], key('lesson-description'.$item->id))
+                        </div>
+                        <div>
+                            @livewire('instructor.lesson-resources',['lesson'=>$item,key('lesson-resources'.$item->id)])
+                        </div>
                     </div>
-                    <div class="my-2 mb-4">
-                        @livewire('instructor.lesson-description', ['lesson' => $item], key($item->id))
-                    </div>
-                    <div>
-                        @livewire('instructor.lesson-resources',['lesson'=>$item,key($item->id)])
-                    </div>
+
 
                 @endif
 

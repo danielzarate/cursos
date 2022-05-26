@@ -1,10 +1,10 @@
-<div class="card">
+<div class="card" x-data="{open:false}">
     <div class="card-body bg-gray-100">
         <header>
-            <h1>Recursos de la Lección</h1>
+            <h1 class="cursor-pointer" x-on:click="open=!open">Recursos de la Lección</h1>
         </header>
 
-        <div>
+        <div x-show="open">
             <hr class="my-2">
             @if ($lesson->resource)
                 <div class="flex justify-between items-center">
