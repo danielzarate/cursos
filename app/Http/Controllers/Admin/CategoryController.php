@@ -11,7 +11,8 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return view('admin.categories.index');
+        $categories=Category::all();
+        return view('admin.categories.index',compact('categories'));
     }
 
 
@@ -22,7 +23,11 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name'=>'required|unique:categories'
+        ]);
+        $category=Category::create($request->all());
+        return redirect()->route('admin.categories.edit',$category)->with('info','La categoria se creo con exito');
     }
 
     public function show(Category $category)
@@ -37,11 +42,18 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'name'=>'required|unique:categories,name,'.$category->id
+        ]);
+        $category->update($request->all());
+        return redirect()->route('admin.categories.edit',$category)->with('info','La categoria se actualizó con exito');
+
+
     }
 
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return redirect()->route('admin.categories.index',$category)->with('info','La categoria se elimino con exito');
     }
 }

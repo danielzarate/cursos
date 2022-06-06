@@ -275,6 +275,25 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
+            'text' => 'Categorias',
+            'route'    => 'admin.categories.index',
+            'active'    => ['admin/categories*'],
+            'icon' => 'fas fa-fw fa-cogs',
+        ],
+
+        [
+            'text' => 'Niveles',
+            'route'    => 'admin.levels.index',
+            'active'    => ['admin/levels*'],
+            'icon' => 'fas fa-fw fa-chart-line',
+        ],
+        [
+            'text' => 'Precios',
+            'route'    => 'admin.prices.index',
+            'active'    => ['admin/prices*'],
+            'icon' => 'fas fa-fw fa-cc-visa',
+        ],
+        [
             'text' => 'change_password',
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
