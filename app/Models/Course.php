@@ -26,6 +26,9 @@ class Course extends Model
 
     }
 
+
+
+
     //Query Scope
     public function scopeCategory($query, $category_id){
         if($category_id)
@@ -46,6 +49,15 @@ class Course extends Model
     {
         return  "slug";
     }
+
+
+    //Relacion uno a uno
+    public function observation (){
+        return $this->hasOne('App\Models\Observation');
+
+
+    }
+
 
     //Relacion uno a muchos
 

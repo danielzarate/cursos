@@ -2,7 +2,12 @@
     <section class="bg-gray-700 py-12 mb-12">
         <div class="container grid grid-cols-1 lg:grid-cols-2 gap-6">
             <figure>
-                <img class="h-60 w-full object-cover" src="{{Storage::url($course->image->url)}}" alt="">
+                @if ($course->image)
+                    <img class="h-60 w-full object-cover" src="{{Storage::url($course->image->url)}}" alt="">
+                @else
+                    <img class="h-60 w-full object-cover" src="https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg" alt="">
+                @endif
+
             </figure>
             <div class="text-white">
                 <h1 class="text-4xl">{{$course->title}}</h1>
@@ -16,22 +21,45 @@
         </div>
 
     </section>
+
+
     <div class="container grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+
+        @if (session('info'))
+            <div class="lg:col-span-3" x-data="{open:true}" x-show="open">
+                <div class="relative py-3 pl-4 pr-10 leading-normal text-red-700 bg-red-100 rounded-lg" role="alert">
+                    <p>{{session('info')}}</p>
+                    <span class="absolute inset-y-0 right-0 flex items-center mr-4">
+                    <svg x-on:click="open=false" class="w-4 h-4 fill-current" role="button" viewBox="0 0 20 20"><path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                    </span>
+                </div>
+            </div>
+        @endif
+
         <div class="order-2 lg:col-span-2 lg:order-1">
+
+            {{-- Metas --}}
             <section class="card mb-12">
                 <div class="card-body">
                     <h1 class="font-bold text-2xl mb-2">Lo que aprenderás</h1>
                     <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
-                        @foreach ($course->goals as $goal)
+                        @forelse ( $course->goals as $goal )
                             <li class="text-gray-700 text-base"><i class="fas fa-check text-gray-600 mr-2"></i>{{$goal->name}}</li>
-                        @endforeach
+                        @empty
+                            <li class="text-gray-700 text-base">Este curso no tiene asignado ninguna meta</li>
+                        @endforelse
+
                     </ul>
                 </div>
 
             </section>
+
+
+            {{-- Temario --}}
             <section class="mb-12">
                 <h1 class="font-bold text-3xl mb-2">Temario</h1>
-                @foreach ($course->sections as $section)
+                @forelse ($course->sections as $section)
                     <article class="mb-4 shadow"
                         @if ($loop->first)
                             x-data="{open:true}"
@@ -52,22 +80,48 @@
                         </div>
 
                     </article>
+                @empty
+                    <article class="card">
+                        <div class="card-body">
+                            Este curso no tiene ninguna sección asignada
+                        </div>
+
+                    </article>
+
+                @endforelse
+
+
+                @foreach ($course->sections as $section)
+
                 @endforeach
             </section>
+
+
+            {{-- Requisitos --}}
             <section class="mb-8">
                 <h1 class="font-bold text-3xl">Requisitos</h1>
                 <ul class="list-disc list-inside">
-                    @foreach ($course->requirements as $requirement)
+                    @forelse ( $course->requirements as $requirement )
                         <li class="text-gray-700 text-base">{{$requirement->name}}</li>
-                    @endforeach
+                    @empty
+                        <li class="text-gray-700 text-base">Aún no hay requisitos</li>
+                    @endforelse
+
+
                 </ul>
 
             </section>
 
+
+            {{-- Descripcion --}}
             <section>
                 <h1 class="font-bold text-3xl">Descripcion</h1>
                 <div class="text-gray-700 text-base">
-                    {!!$course->description!!}
+                    @if ($course->description)
+                        {!!$course->description!!}
+                    @else
+                        <p>Aun no hay decripcion</p>
+                    @endif
                 </div>
 
             </section>
@@ -84,15 +138,12 @@
                         </div>
                     </div>
 
-                    @can('enrolled',$course)
-                        <a href="{{route('courses.status',$course)}}" class="btn btn-danger btn-block mt-4">Continua con el curso</a>
 
-                    @else
-                        <form action="{{route('courses.enrolled',$course)}}" method="POST">
-                            @csrf
-                            <button class="btn btn-danger btn-block mt-4" type="submit">Llevar este curso</button>
-                        </form>
-                    @endcan
+                    <form class="mt-4" action="{{route('admin.courses.approved',$course)}}" method="POST">
+                        @csrf
+                        <button class="btn btn-primary w-full" type="submit">Aprobar Curso</button>
+                    </form>
+                    <a href="{{route('admin.courses.observation',$course)}}" class="btn btn-danger w-full block mt-4 text-center ">Agregar Observaciones</a>
 
 
 
@@ -100,25 +151,7 @@
 
                 </div>
             </section>
-            <aside class="hidden lg:block">
-                @foreach ($similares as $similar)
-                <article class="flex mb-6">
-                    <img class="h-32 w-40 object-cover" src="{{Storage::url($similar->image->url)}}" alt="">
-                    <div class="ml-3">
-                        <h1>
-                            <a class="font-bold text-gray-500 mb-3" href="{{route('courses.show',$similar)}}">{{Str::limit($similar->title,40)}}</a>
-                        </h1>
-                        <div class="flex items-center mb-2">
-                            <img class="h-8 w-8 object-cover rounded-full shadow-lg" src="{{$similar->teacher->profile_photo_url}}" alt="">
-                            <p class="text-gray-700 text-sm ml-2">{{$similar->teacher->name}}</p>
-                        </div>
 
-                        <p class="text-sm"><i class="fas fa-star mr-2 text-yellow-400"></i>{{$similar->rating}}</p>
-                    </div>
-                </article>
-
-                @endforeach
-            </aside>
         </div>
 
     </div>

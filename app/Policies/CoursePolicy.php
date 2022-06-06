@@ -30,5 +30,27 @@ class CoursePolicy
         }
     }
 
+    public function dicatated(User $user, Course $course){
+        if($course->user_id==$user->id){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
+    public function revision(User $user, Course $course){
+        if($course->status==2){
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+
+    }
+
 
 }

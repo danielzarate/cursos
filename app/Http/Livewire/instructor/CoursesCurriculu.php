@@ -5,9 +5,12 @@ namespace App\Http\Livewire\Instructor;
 use Livewire\Component;
 use App\Models\Course;
 use App\Models\Section;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CoursesCurriculu extends Component
 {
+    use AuthorizesRequests;
+
     public $course, $section, $name;
 
     protected $rules=[
@@ -18,11 +21,12 @@ class CoursesCurriculu extends Component
     public function mount(Course $course){
         $this->course=$course;
         $this->section=new Section();
+        $this->authorize('dicatated',$course);
     }
 
     public function render()
     {
-        return view('livewire.instructor.courses-curriculu')->layout('layouts.instructor');
+        return view('livewire.instructor.courses-curriculu')->layout('layouts.instructor',['course'=>$this->course]);
     }
 
     public function edit (Section $section)
@@ -56,6 +60,8 @@ class CoursesCurriculu extends Component
         $section->delete();
         $this->course=Course::find($this->course->id);
     }
+
+
 
 
 }
