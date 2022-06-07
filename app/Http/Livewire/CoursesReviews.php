@@ -7,7 +7,10 @@ use App\Models\Course;
 class CoursesReviews extends Component
 {
 
-    public $course_id;
+    public $course_id, $comment;
+    public $rating=5;
+
+
 
     public function mount(Course $course){
         $this->course_id=$course->id;
@@ -17,5 +20,15 @@ class CoursesReviews extends Component
     {
         $course=Course::find($this->course_id);
         return view('livewire.courses-reviews',compact('course'));
+    }
+
+    public function store()
+    {
+        $course=Course::find($this->course_id);
+        $course->reviews()->create([
+            'comment'=>$this->comment,
+            'rating'=>$this->rating,
+            'user_id'=>auth()->user()->id,
+        ]);
     }
 }
