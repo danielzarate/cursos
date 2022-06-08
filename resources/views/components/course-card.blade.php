@@ -19,9 +19,18 @@
             </ul>
             <p class="text-sm text-gray-500 ml-auto"> <i class="fas fa-users"></i>({{$course->students_count}})</p>
         </div>
-        <a href="{{route('courses.show',$course)}}" class="block text-center w-full py-2 px-4 mt-2 mb-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+
+        @if ($course->price->value==0)
+        <p class="my-2 text-gray-500 font-bold">Gratis</p>
+        @else
+            <p class="my-2 text-gray-500 font-bold">US$ {{$course->price->value}}</p>
+        @endif
+
+
+        <a href="{{route('courses.show',$course)}}" class="block text-center w-full py-2 px-4 mb-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
             Más informacion
         </a>
+
 
     </div>
 
